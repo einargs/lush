@@ -1,0 +1,8 @@
+# Generated
+syntax-analysis/Lexer.c
+syntax-analysis/Lexer.h
+syntax-analysis/Parser.c
+syntax-analysis/Parser.h
+
+# Output
+test
