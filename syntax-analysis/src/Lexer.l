@@ -10,13 +10,15 @@
 /* noyywrap is used to redirect flex to different files */
 %option noyywrap
 /* not sure what some of these do; they're from the example */
-/*%option reentrant never-interactive nounistd
-%option bison-bridge*/
+%option reentrant never-interactive nounistd
+%option bison-bridge
 
 /** tokens **/
 /* special character tokens */
 L_PAREN "("
 R_PAREN ")"
+L_BRACE "{"
+R_BRACE "}"
 L_BRACKET "["
 R_BRACKET "]"
 P_BRACKET "[]"
@@ -46,7 +48,5 @@ WS [\t\n ]+
 /* */
 %%
 {ELVIS} { printf("elvis"); }
-
-
 
 {WS} {}
