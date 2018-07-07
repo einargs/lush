@@ -20,7 +20,72 @@
 %parse-param { yyscan_t scanner }
 
 %union {
+  /* tokens */
   char* text;
+
+  /* general types */
+  LinkedList* expressionList; /* LinkedList<ExpressionNode*> */
+
+  /* top level types */
+  LushFile* lushFile;
+  ExpressionNode* expression;
+
+  /* expression types */
+  LiteralNode* literal;
+  FunctionCallNode* functionCall;
+  VariableAccessNode* variableAccess;
+  LambdaFunctionNode* lambdaFunction;
+  ElvisNode* elvisExp;
+  BlockNode* block;
+
+  /* literal types */
+  NumberNode* number;
+  StringNode* string;
+  AtomNode* atom;
+  CompoundLiteralNode* compoundLiteral;
+
+  /* compound literal types */
+  TupleNode* tuple;
+  ListNode* list;
+  StructNode* structure; /* can't be named struct because that's a C keyword */
+
+  /* struct types */
+  LinkedList* structPairs; /* LinkedList<StructPairNode*> */
+  StructPairNode* structPair;
+
+  /* reference types */
+  VariableRefNode* variableRef;
+  TypeRefNode* typeRef;
+  NamespaceNode* namespace;
+
+  /* block types */
+  DefinitionNode* definition;
+
+  /* definition types */
+  VariableDefNode* variableDef;
+  FunctionDefNode* functionDef;
+  TypeDefNode* typeDef;
+
+  /* function def types */
+  FunctionDefHeaderNode* functionDefHeader;
+  LinkedList* functionParams; /* LinkedList<FunctionParamNode*> */
+  FunctionParamNode* functionParam;
+
+  /* type def types */
+  TypeNode* type;
+
+  /* type types */
+  TupleTypeNode* tupleType;
+  MaybeTypeNode* maybeType;
+  ListTypeNode* listType;
+  StructTypeNode* structType;
+
+  /* tuple type types */
+  LinkedList* tupleTypeMembers; /* LinkedList<TypeNode*> */
+
+  /* struct type types */
+  LinkedList* structTypePairs; /* LinkedList<StructTypePairNode*> */
+  StructTypePairNode* structTypePair;
 }
 
 /* special symbol token pairs */
@@ -36,6 +101,77 @@
 
 %token <text> T_LIT_INT T_LIT_DEC T_LIT_ATOM T_LIT_STR
 
+/** non-terminal types **/
+%type <lushFile> lush_file
+%type <expression> expression
+
+/* expression types */
+%type <literal> literal
+%type <functionCall> function_call
+%type <variableAccess> variable_access
+%type <expression> parenthetical
+%type <lambdaFunction> lambda_function
+%type <elvisExp> elvis_expression
+%type <block> block
+
+/* literal types */
+%type <number> number_literal
+%type <string> string_literal
+%type <atom> atom_literal
+%type <compoundLiteral> compound_literal
+
+/* compound literal types */
+%type <tuple> tuple_literal
+%type <list> list_literal
+%type <structure> struct_literal
+
+/* tuple literal types */
+%type <expressionList> tuple_literal_members
+
+/* list literal types */
+%type <expressionList> list_literal_members
+
+/* struct literal types */
+%type <structPairs> struct_literal_pairs
+%type <structPair> struct_literal_pair
+%type <text> struct_field_ident
+
+/* function call types */
+%type <expressionList> function_call_args
+%type <expression> function_call_arg
+
+/* reference types */
+%type <variableRef> variable_ref
+%type <typeRef> type_ref
+%type <namespace> namespace
+
+/* block types */
+%type <definition> definition
+
+/* definition types */
+%type <variableDef> variable_def
+%type <functionDef> function_def
+%type <typeDef> type_def
+
+/* function def types */
+%type <functionDefHeader> function_def_header
+%type <functionParams> function_params
+%type <functionParam> function_param
+%type <text> function_param_name
+
+/* type def types */
+%type <type> type;
+
+/* type types */
+%type <tupleType> tuple_type
+%type <maybeType> maybe_type
+
+/* tuple type types */
+%type <tupleTypeMembers> tuple_type_members
+
+/* struct type types */
+%type <structTypePairs> struct_type_pairs
+%type <structTypePair> struct_type_pair
 
 %start lush_file
 
@@ -50,9 +186,9 @@ expression
   | function_call
   | variable_access
   | parenthetical
-  | block
   | lambda_function
   | elvis_expression
+  | block
   ;
 
 literal
@@ -102,6 +238,10 @@ list_literal_members
   ;
 
 struct_literal
+  : struct_literal_pairs
+  ;
+
+struct_literal_pairs
   : struct_literal struct_literal_pair
   | struct_literal_pair
   ;
@@ -151,20 +291,15 @@ parenthetical
   ;
 
 lambda_function
-  : T_BACKSLASH lambda_function_args T_EQUALS expression
-  ;
-
-lambda_function_args
-  : lambda_function_args lambda_function_arg
-  | lambda_function_arg
-  ;
-
-lambda_function_arg
-  : T_LOWCASE_IDENT
+  : T_BACKSLASH function_params T_EQUALS expression
   ;
 
 elvis_expression
   : expression T_ELVIS expression
+  ;
+
+block
+  : definition expression
   ;
 
 definition
@@ -197,10 +332,6 @@ function_param_name
   : T_LOWCASE_IDENT
   ;
 
-block
-  : definition expression
-  ;
-
 type_def
   : type_ref T_EQUALS type
   ;
@@ -223,8 +354,8 @@ tuple_type
   ;
 
 tuple_type_members
-  : tuple_type_members tuple_type
-  | tuple_type
+  : tuple_type_members type
+  | type
   ;
 
 maybe_type
@@ -232,6 +363,10 @@ maybe_type
   ;
 
 struct_type
+  : struct_type_pairs
+  ;
+
+struct_type_pairs
   : struct_type struct_type_pair
   | struct_type_pair
   ;
