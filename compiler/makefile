@@ -6,7 +6,7 @@ build: $(FILES)
 	$(CC) $(CFLAGS) $(LLVM_CFLAGS) $(FILES) -o lush
 
 ../syntax-analysis/Parser.c:
-	$(MAKE) -C $(SYNTAX_ANALYSIS_DIR) Parser.c
+	bison Parser.c
 
 ../syntax-analysis/Lexer.c:
-	$(MAKE) -C $(SYNTAX_ANALYSIS_DIR) Lexer.c
+	flex Lexer.c

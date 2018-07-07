@@ -20,20 +20,19 @@
 %parse-param { yyscan_t scanner }
 
 %union {
-  /* tokens */
+  /* token values */
   char* text;
 
   /* general types */
   LinkedList* expressionList; /* LinkedList<ExpressionNode*> */
 
   /* top level types */
-  LushFile* lushFile;
   ExpressionNode* expression;
 
   /* expression types */
   LiteralNode* literal;
   FunctionCallNode* functionCall;
-  VariableAccessNode* variableAccess;
+  VariableRefNode* variableRef;
   LambdaFunctionNode* lambdaFunction;
   ElvisNode* elvisExp;
   BlockNode* block;
@@ -42,8 +41,6 @@
   NumberNode* number;
   StringNode* string;
   AtomNode* atom;
-  CompoundLiteralNode* compoundLiteral;
-
   /* compound literal types */
   TupleNode* tuple;
   ListNode* list;
@@ -53,9 +50,7 @@
   LinkedList* structPairs; /* LinkedList<StructPairNode*> */
   StructPairNode* structPair;
 
-  /* reference types */
-  VariableRefNode* variableRef;
-  TypeRefNode* typeRef;
+  /* variable ref types */
   NamespaceNode* namespace;
 
   /* block types */
@@ -75,6 +70,7 @@
   TypeNode* type;
 
   /* type types */
+  TypeRefNode* typeRef;
   TupleTypeNode* tupleType;
   MaybeTypeNode* maybeType;
   ListTypeNode* listType;
@@ -102,13 +98,12 @@
 %token <text> T_LIT_INT T_LIT_DEC T_LIT_ATOM T_LIT_STR
 
 /** non-terminal types **/
-%type <lushFile> lush_file
 %type <expression> expression
 
 /* expression types */
 %type <literal> literal
 %type <functionCall> function_call
-%type <variableAccess> variable_access
+%type <variableRef> variable_ref
 %type <expression> parenthetical
 %type <lambdaFunction> lambda_function
 %type <elvisExp> elvis_expression
@@ -118,9 +113,6 @@
 %type <number> number_literal
 %type <string> string_literal
 %type <atom> atom_literal
-%type <compoundLiteral> compound_literal
-
-/* compound literal types */
 %type <tuple> tuple_literal
 %type <list> list_literal
 %type <structure> struct_literal
@@ -141,7 +133,6 @@
 %type <expression> function_call_arg
 
 /* reference types */
-%type <variableRef> variable_ref
 %type <typeRef> type_ref
 %type <namespace> namespace
 
@@ -173,18 +164,14 @@
 %type <structTypePairs> struct_type_pairs
 %type <structTypePair> struct_type_pair
 
-%start lush_file
+%start expression
 
 %%
-
-lush_file
-  : expression
-  ;
 
 expression
   : literal
   | function_call
-  | variable_access
+  | variable_ref
   | parenthetical
   | lambda_function
   | elvis_expression
@@ -195,7 +182,9 @@ literal
   : number_literal
   | string_literal
   | atom_literal
-  | compound_literal
+  | tuple_literal
+  | list_literal
+  | struct_literal
   ;
 
 number_literal
@@ -209,12 +198,6 @@ string_literal
 
 atom_literal
   : T_LIT_ATOM
-  ;
-
-compound_literal
-  : tuple_literal
-  | list_literal
-  | struct_literal
   ;
 
 tuple_literal
@@ -282,10 +265,6 @@ namespace
   | T_UPCASE_IDENT
   ;
 
-variable_access
-  : variable_ref
-  ;
-
 parenthetical
   : T_L_PAREN expression T_R_PAREN
   ;
@@ -338,11 +317,7 @@ type_def
 
 type
   | type_ref
-  | compound_type
-  ;
-
-compound_type
-  : tuple_type
+  | tuple_type
   | maybe_type
   | list_type
   | struct_type
