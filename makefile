@@ -1,18 +1,18 @@
-CODEGEN_FILES = codegen/codegen.c codegen/Context.c
-LIB_FILES = lib/Map.c
-AST_FILES = ast/Node.c
-SYNTAX_ANALYSIS_FILES = syntax-analysis/Parser.c syntax-analysis/Lexer.c
-ROOT_FILES = main.c
+export CC = clang-6.0
+export CFLAGS = -g -O3
+export LLVM_CFLAGS = `llvm-config-6.0 --cflags --ldflags --system-libs --libs core`
 
-FILES = $(ROOT_FILES) $(SYNTAX_ANALYSIS_FILES) #$(CODEGEN_FILES) $(LIB_FILES) $(AST_FILES)
-CC = clang-6.0
-CFLAGS = -g -O3 `llvm-config-6.0 --cflags --ldflags --system-libs --libs core`
+export PROJ_DIR = `pwd`
+export COMPILER_DIR = $(PROJ_DIR)/compiler
+export SYNTAX_ANALYSIS_DIR = $(PROJ_DIR)/syntax-analysis
+export TOOLS_DIR = $(PROJ_DIR)/tools
+export INTERACTIVE_LEXER_DIR = $(TOOLS_DIR)/interactive-lexer
 
-test: $(FILES)
-	$(CC) $(CFLAGS) $(FILES) -o test
+compiler:
+	$(MAKE) -C $(COMPILER_DIR)
 
-syntax-analysis/Lexer.c: syntax-analysis/Lexer.l
-	flex syntax-analysis/Lexer.l
+run-interactive-lexer: interactive-lexer
+	$(INTERACTIVE_LEXER_DIR)/interactive-lexer.build
 
-syntax-analysis/Parser.c: syntax-analysis/Parser.y syntax-analysis/Lexer.c
-	bison syntax-analysis/Parser.y
+interactive-lexer:
+	$(MAKE) -C $(INTERACTIVE_LEXER_DIR)
