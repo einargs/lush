@@ -1,7 +1,5 @@
 # Generated
-**/Lexer.c
-**/Lexer.h
-**/Parser.c
-**/Parser.h
+generated
 
-# Output
+# Build
+build
