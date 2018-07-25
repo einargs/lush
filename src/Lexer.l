@@ -5,7 +5,7 @@
   #include <stdio.h>
 
   int yyerror(FileNode** rootNode, yyscan_t scanner, const char* msg) {
-    fprintf(stderr, "Error (line ??): %s\n",msg);
+    fprintf(stderr, "Error (line ): %s\n", msg);
     return 1;
   }
 %}

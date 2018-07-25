@@ -5,6 +5,7 @@
   #include <string>
 
   int yyerror(FileNode** rootNode, yyscan_t scanner, const char* msg);
+  #define YYDEBUG 1
 %}
 
 %output "generated/Parser.cc"
@@ -20,10 +21,11 @@ for more information about `%define lr.type ielr`. */
 
 /* This causes bison to split when it encounters ambiguity. See the docs:
 https://www.gnu.org/software/bison/manual/bison.html#GLR-Parsers */
-
 %glr-parser
+%verbose
 %define parse.error verbose /* vebose errors during development. */
 %define api.pure /* define a reentrant parser */
+%define parse.trace
 %lex-param { yyscan_t scanner }
 %parse-param { FileNode** rootNode }
 %parse-param { yyscan_t scanner }
@@ -189,6 +191,11 @@ https://www.gnu.org/software/bison/manual/bison.html#GLR-Parsers */
 %type <structTypePair> struct_type_pair
 
 /*look into %prec and %dprec more */
+
+%printer { fprintf (yyoutput, "%s", $$->getLocalIdent().c_str()); } variable_ref;
+%printer { fprintf (yyoutput, "%s", $$->getLocalIdent().c_str()); } type_ref;
+%printer { fprintf (yyoutput, "%s", $$->c_str()); } T_UPCASE_IDENT;
+%printer { fprintf (yyoutput, "%s", $$->c_str()); } T_LOWCASE_IDENT;
 
 %start file
 

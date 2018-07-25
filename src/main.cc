@@ -42,6 +42,7 @@ int main() {
 
   //printf("<input>\n%s\n</input>", name.c_str());
 
+  //yydebug = 1;
   FileNode* node = getAst(name.c_str());
   //printf("getAst\n");
 
