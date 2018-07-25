@@ -123,6 +123,7 @@ https://www.gnu.org/software/bison/manual/bison.html#GLR-Parsers */
 /** non-terminal types **/
 %type <file> file
 %type <expression> expression
+%type <expression> function_call_arg_exp
 
 /* expression types */
 %type <literal> literal
@@ -199,6 +200,14 @@ https://www.gnu.org/software/bison/manual/bison.html#GLR-Parsers */
 
 %start file
 
+%precedence P_FUNC_ARG
+%precedence P_VAR_REF
+%precedence P_FUNC_CALL
+%precedence P_TYPE_DEF
+%precedence P_VAR_DEF
+%precedence P_FUNC_DEF
+%precedence P_BLOCK
+
 %%
 
 file
@@ -207,11 +216,19 @@ file
   }
   ;
 
+function_call_arg_exp
+  : literal { $$ = (ExpressionNode*) $1; }
+  | variable_ref { $$ = (ExpressionNode*) $1; }
+  | parenthetical { $$ = (ExpressionNode*) $1; }
+  | lambda_function { $$ = (ExpressionNode*) $1; }
+  | elvis_expression { $$ = (ExpressionNode*) $1; }
+  ;
+
 expression
   : literal { $$ = (ExpressionNode*) $1; }
-  | block { $$ = (ExpressionNode*) $1; } %dprec 2
-  | function_call { $$ = (ExpressionNode*) $1; } %dprec 1
-  | variable_ref { $$ = (ExpressionNode*) $1; }
+  | block { $$ = (ExpressionNode*) $1; } %prec P_BLOCK
+  | function_call { $$ = (ExpressionNode*) $1; } %prec P_FUNC_CALL
+  | variable_ref { $$ = (ExpressionNode*) $1; } %prec P_VAR_REF
   | parenthetical { $$ = (ExpressionNode*) $1; }
   | lambda_function { $$ = (ExpressionNode*) $1; }
   | elvis_expression { $$ = (ExpressionNode*) $1; }
@@ -321,7 +338,7 @@ function_call_args
   ;
 
 function_call_arg
-  : expression {
+  : function_call_arg_exp {
     $$ = $1;
   }
   ;
@@ -369,9 +386,9 @@ block
   ;
 
 definition
-  : variable_def { $$ = (DefinitionNode*) $1; }
-  | function_def { $$ = (DefinitionNode*) $1; }
-  | type_def { $$ = (DefinitionNode*) $1; } /*taking this away seems to be a good start on the problem*/
+  : variable_def { $$ = (DefinitionNode*) $1; } %prec P_VAR_DEF
+  | function_def { $$ = (DefinitionNode*) $1; } %prec P_FUNC_DEF
+  | type_def { $$ = (DefinitionNode*) $1; } %prec P_TYPE_DEF
   ;
 
 variable_def
