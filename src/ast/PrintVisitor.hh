@@ -5,10 +5,17 @@
 
 class PrintVisitor: public NodeVisitor {
   int level;
+  char* indentCharStr = "| ";
   std::ostringstream &strBuilder;
 
   PrintVisitor &nextLevel() {
     return *new PrintVisitor(level+1, strBuilder);
+  }
+
+  void indent() {
+    for (int i = 0; i < level; i++) {
+      strBuilder << indentCharStr;
+    }
   }
 
 public:
@@ -19,175 +26,175 @@ public:
   ~PrintVisitor() {}
 
   PrintVisitor &visit(FileNode &node) {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "file";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(FunctionCallNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "function_call";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(NamespaceNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "namespace (" << node.getIdent() << ")";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(VariableRefNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "variable_ref (" << node.getLocalIdent() << ")";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(LambdaFunctionNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "lambda_function";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(ElvisNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "elvis";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(BlockNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "block";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(NumberNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "number";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(StringNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "string";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(AtomNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "atom";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(TupleNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "tuple";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(ListNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "list";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(StructNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "struct";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(StructPairNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "struct_pair";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(VariableDefNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "variable_def";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(FunctionDefNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "function_def";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(TypeDefNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "type_def";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(FunctionDefHeaderNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "function_def_header";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(FunctionParamNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "function_param";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(TypeRefNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "type_ref ("<<node.getLocalIdent()<<")";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(TupleTypeNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "tuple_type";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(MaybeTypeNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "maybe_type";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(ListTypeNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "list_type";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(StructTypeNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "struct_type";
     strBuilder << "\n";
     return nextLevel();
   }
 
   PrintVisitor &visit(StructTypePairNode &node)  {
-    strBuilder << std::string(level, '\t');
+    indent();
     strBuilder << "struct_type_pair";
     strBuilder << "\n";
     return nextLevel();
