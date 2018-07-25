@@ -1,0 +1,5 @@
+func Str =
+  y Nu = 5
+  concat x y
+
+(func {1})

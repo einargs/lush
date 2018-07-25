@@ -1,0 +1,5 @@
+func Str =
+  funcBlockVar Nu = 5
+  funcRet x
+
+3

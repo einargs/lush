@@ -1,0 +1,10 @@
+Test.ff Num = 3
+
+greet Str salutation Str person Str =
+  append salutation person
+
+func Str =
+  y Nu = 5
+  concat x y
+
+(func {1})

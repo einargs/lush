@@ -1,7 +1,0 @@
-Test.ff Num = 3
-
-func Str =
-  y Str = "ff"
-  concat x y
-
-func "fff"
