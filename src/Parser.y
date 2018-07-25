@@ -12,7 +12,7 @@
 %defines "generated/Parser.hh"
 
 /*%skeleton "lalr1.cc"*/
-%require "3.0.4"
+%require "3.0.5"
 
 /* see:
 https://www.gnu.org/software/bison/manual/html_node/LR-Table-Construction.html
