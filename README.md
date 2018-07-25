@@ -52,7 +52,7 @@ The compiler can then handle this message as it sees fit.
 An example message would be the import system in Lush, which uses annotations
 to tell the compiler that it needs to load another file.
 
-lush```
+```
 @import #[greet] from: "./greeter"
 ```
 
@@ -63,7 +63,7 @@ file's context.
 
 Another example works like this:
 
-lush```
+```
 @import #[pugLang] from: "@pug"
 @import #[template `as` mainPageTemplate]
         from: "./view/main-page.pug"
@@ -95,14 +95,14 @@ the same name.)
 
 It's even possible to simplify the template import:
 
-lush```
+```
 @import #[pugImport] from: "@pug"
 @pugImport #mainPageTemplate from: "./view/main-page"
 ```
 
 By defining a helper function `pugImport`:
 
-lush```
+```
 @import #[Quote.VarRef] from: "@std/quote"
 @import #[Import.Msg] from: "@std/loader"
 @import #[pugLang] from "@pug"
