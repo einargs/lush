@@ -50,7 +50,7 @@ LIT_DEC {DIGIT}+"."{DIGIT}*
 LIT_ATOM ":"{IDENT_CHAR}+
 LIT_STR "\"".*"\""
 
-WS [\t\n ]+
+WS [\t\n\r ]+
 
 /* */
 %%
